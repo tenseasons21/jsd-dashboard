@@ -1,0 +1,1485 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Dashboard – JASINDO × JAMKRINDO</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --navy:       #0B1F3A;
+  --navy-mid:   #122649;
+  --navy-light: #1B3A6B;
+  --gold:       #C9A84C;
+  --gold-light: #E4C97B;
+  --gold-pale:  #F5E9C8;
+  --slate:      #4A5E7A;
+  --slate-light:#8FA3BE;
+  --cream:      #F9F6F0;
+  --white:      #FFFFFF;
+  --success:    #2ECC71;
+  --warning:    #F39C12;
+  --danger:     #E74C3C;
+  --text-dark:  #0B1F3A;
+  --text-mid:   #4A5E7A;
+  --text-light: #8FA3BE;
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --shadow-sm:  0 2px 8px rgba(11,31,58,.10);
+  --shadow-md:  0 6px 24px rgba(11,31,58,.14);
+  --shadow-lg:  0 16px 48px rgba(11,31,58,.18);
+  --transition: all .35s cubic-bezier(.4,0,.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:#fff;color:var(--text-dark);min-height:100vh;overflow-x:hidden;}
+
+.hidden{display:none!important}
+.page{position:fixed;inset:0;overflow-y:auto;transition:opacity .4s ease,transform .4s cubic-bezier(.4,0,.2,1)}
+.page.page-out{opacity:0;pointer-events:none}
+.page.page-in{opacity:1;pointer-events:all}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border:none;border-radius:var(--radius-sm);font-family:'Montserrat',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:var(--transition);text-decoration:none;}
+.btn-primary{background:var(--gold);color:var(--navy);}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy);}
+.btn-outline:hover{background:var(--navy);color:var(--white);}
+.btn-ghost{background:transparent;color:var(--slate);padding:8px 14px;}
+.btn-ghost:hover{background:rgba(11,31,58,.07);color:var(--navy);}
+.btn-danger{background:var(--danger);color:var(--white);}
+.btn-success{background:var(--success);color:var(--white);}
+.btn-sm{padding:7px 16px;font-size:12px;}
+.btn-xs{padding:5px 12px;font-size:11px;}
+
+.section-title{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.section-sub{font-size:13px;color:var(--text-light);margin-bottom:28px;}
+
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--slate);background:none;border:none;cursor:pointer;padding:6px 0;transition:color .2s;margin-bottom:20px;}
+.back-btn:hover{color:var(--navy);}
+.back-btn svg{width:16px;height:16px;}
+
+/* HEADER */
+.top-header{position:sticky;top:0;z-index:100;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;box-shadow:0 2px 16px rgba(11,31,58,.35);}
+.top-header .brand{display:flex;align-items:center;gap:12px;font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;color:var(--gold);}
+.header-meta{font-size:12px;color:var(--slate-light);text-align:right;}
+.header-meta .today{font-weight:600;color:var(--gold-light);}
+.lock-btn{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:var(--gold-light);border-radius:var(--radius-sm);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);}
+.lock-btn:hover{background:rgba(201,168,76,.3);}
+.lock-btn svg{width:16px;height:16px;}
+.header-right{display:flex;align-items:center;gap:16px;}
+
+.page-content{max-width:1280px;margin:0 auto;padding:32px 32px 60px;}
+
+/* SPLASH */
+#splash{background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;z-index:999;}
+.splash-logo{animation:splashIn .8s cubic-bezier(.4,0,.2,1) forwards;opacity:0;}
+@keyframes splashIn{0%{opacity:0;transform:scale(.85) translateY(20px);}100%{opacity:1;transform:scale(1) translateY(0);}}
+.splash-bar{width:200px;height:2px;background:rgba(11,31,58,.1);border-radius:2px;overflow:hidden;}
+.splash-bar-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--navy),var(--navy-light));animation:barFill 2.2s .4s ease forwards;}
+@keyframes barFill{to{width:100%;}}
+
+/* HOME */
+#home{background-color:var(--cream);}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.menu-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid rgba(201,168,76,.2);padding:40px 36px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;box-shadow:var(--shadow-sm);}
+.menu-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.06) 0%,transparent 60%);opacity:0;transition:opacity .35s;}
+.menu-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.menu-card:hover::before{opacity:1;}
+.menu-card-icon{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--navy),var(--navy-light));display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 4px 16px rgba(11,31,58,.25);}
+.menu-card-icon svg{width:28px;height:28px;color:var(--gold);}
+.menu-card h3{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:10px;}
+.menu-card p{font-size:14px;color:var(--text-mid);line-height:1.6;}
+.menu-card .arrow{position:absolute;bottom:28px;right:28px;width:36px;height:36px;border-radius:50%;background:var(--gold-pale);color:var(--gold);display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+.menu-card:hover .arrow{background:var(--gold);color:var(--white);transform:translateX(3px);}
+.menu-card .arrow svg{width:16px;height:16px;}
+
+/* JASINDO PAGE */
+#jasindo{background:var(--cream);}
+
+.view-toggle{display:inline-flex;background:var(--white);border-radius:var(--radius-sm);padding:4px;border:1px solid rgba(201,168,76,.2);box-shadow:var(--shadow-sm);margin-bottom:20px;}
+.view-btn{padding:8px 20px;border:none;border-radius:4px;background:transparent;color:var(--text-mid);font-family:'Montserrat',sans-serif;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;transition:var(--transition);display:flex;align-items:center;gap:7px;}
+.view-btn.active{background:var(--navy);color:var(--gold);}
+.view-btn:not(.active):hover{background:var(--cream);}
+.view-btn svg{width:15px;height:15px;}
+
+.division-tabs{display:flex;gap:4px;background:var(--white);border-radius:var(--radius-sm);padding:4px;border:1px solid rgba(201,168,76,.2);margin-bottom:20px;overflow-x:auto;box-shadow:var(--shadow-sm);}
+.tab-btn{padding:9px 18px;border:none;border-radius:4px;background:transparent;color:var(--text-mid);font-family:'Montserrat',sans-serif;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;transition:var(--transition);}
+.tab-btn.active{background:var(--navy);color:var(--gold);}
+.tab-btn:not(.active):hover{background:var(--cream);}
+
+.month-selector-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.month-selector-row label{font-size:12px;font-weight:600;color:var(--text-mid);letter-spacing:.04em;}
+.month-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.month-pill{padding:6px 13px;border:1.5px solid rgba(11,31,58,.1);border-radius:20px;font-size:12px;font-weight:600;background:var(--white);color:var(--text-mid);cursor:pointer;transition:var(--transition);font-family:'Montserrat',sans-serif;}
+.month-pill.active{background:var(--navy);color:var(--gold);border-color:var(--navy);}
+.month-pill:hover:not(.active){border-color:var(--gold);color:var(--navy);}
+
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;}
+.summary-card{background:var(--white);border-radius:var(--radius-md);padding:22px;border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
+.summary-card::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right,rgba(201,168,76,.1),transparent 70%);}
+.summary-card .sc-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:8px;}
+.summary-card .sc-value{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px;line-height:1.2;}
+.summary-card .sc-sub{font-size:11px;color:var(--text-light);}
+.summary-card .sc-icon{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--gold-pale);color:var(--gold);}
+.summary-card .sc-icon svg{width:18px;height:18px;}
+
+.progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.progress-card{background:var(--white);border-radius:var(--radius-md);padding:22px;border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);}
+.progress-card .pc-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;}
+.progress-card .pc-value{font-size:32px;font-weight:700;font-family:'Montserrat',sans-serif;margin-bottom:12px;}
+.progress-bar-track{height:8px;background:var(--cream);border-radius:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.pct-green .pc-value{color:var(--success);}
+.pct-yellow .pc-value{color:var(--warning);}
+.pct-red   .pc-value{color:var(--danger);}
+.pct-green .progress-bar-fill{background:linear-gradient(90deg,#27ae60,var(--success));}
+.pct-yellow .progress-bar-fill{background:linear-gradient(90deg,#e67e22,var(--warning));}
+.pct-red   .progress-bar-fill{background:linear-gradient(90deg,#c0392b,var(--danger));}
+
+.chart-container{background:var(--white);border-radius:var(--radius-md);padding:24px;border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);margin-bottom:16px;}
+.chart-container h4{font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:16px;letter-spacing:.04em;}
+.chart-wrapper{position:relative;height:280px;}
+
+.explanation-section{background:var(--white);border-radius:var(--radius-md);padding:24px;border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);margin-bottom:16px;}
+.explanation-section h4{font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:16px;letter-spacing:.04em;}
+.explanation-content{font-size:14px;color:var(--text-dark);line-height:1.6;white-space:pre-wrap;}
+
+.table-container{background:var(--white);border-radius:var(--radius-md);border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead{background:var(--navy);}
+thead th{color:var(--gold-light);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:14px 16px;text-align:left;}
+tbody tr:nth-child(even){background:#F5F8FD;}
+tbody tr:hover{background:var(--gold-pale);}
+tbody td{padding:12px 16px;color:var(--text-dark);font-size:13px;border-bottom:1px solid rgba(11,31,58,.05);}
+.pct-cell{font-family:'Montserrat',sans-serif;font-weight:600;font-size:12px;padding:3px 8px;border-radius:4px;display:inline-block;}
+.pct-cell.green{background:#e8faf1;color:#27ae60;}
+.pct-cell.yellow{background:#fef9e7;color:#e67e22;}
+.pct-cell.red{background:#fdf0ed;color:#c0392b;}
+
+.division-overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;}
+.div-ov-card{background:var(--white);border-radius:var(--radius-md);padding:20px;border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);cursor:pointer;transition:var(--transition);}
+.div-ov-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:rgba(201,168,76,.5);}
+.div-ov-card .doc-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.doc-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;}
+.doc-badge.green{background:#e8faf1;color:#27ae60;}
+.doc-badge.yellow{background:#fef0e7;color:#e67e22;}
+.doc-badge.red{background:#fdf0ed;color:#c0392b;}
+.div-ov-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.div-ov-lbl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light);}
+.div-ov-val{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:var(--text-dark);}
+.div-ov-bar{height:4px;background:var(--cream);border-radius:2px;overflow:hidden;margin-top:10px;}
+.div-ov-bar-fill{height:100%;border-radius:2px;transition:width .8s ease;}
+.div-ov-hint{font-size:10px;color:var(--text-light);margin-top:6px;text-align:right;}
+
+#jamkrindo{background:var(--cream);}
+.total-premi-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:var(--radius-lg);padding:36px 40px;margin-bottom:28px;position:relative;overflow:hidden;}
+.total-premi-card::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(201,168,76,.08);top:-80px;right:-80px;}
+.total-premi-card::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(201,168,76,.05);bottom:-60px;left:40%;}
+.tp-label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate-light);margin-bottom:10px;}
+.tp-value{font-family:'Montserrat',sans-serif;font-size:42px;font-weight:700;color:var(--gold);line-height:1.1;margin-bottom:6px;}
+.tp-sub{font-size:13px;color:var(--slate-light);}
+.tp-badge{position:absolute;top:32px;right:40px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);color:var(--gold-light);font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;}
+.filter-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+.search-input{flex:1;min-width:200px;padding:10px 16px;border:1.5px solid rgba(11,31,58,.12);border-radius:var(--radius-sm);font-family:'Montserrat',sans-serif;font-size:13px;background:var(--white);color:var(--text-dark);transition:border-color .2s;}
+.search-input:focus{outline:none;border-color:var(--gold);}
+.select-filter{padding:10px 14px;border:1.5px solid rgba(11,31,58,.12);border-radius:var(--radius-sm);font-family:'Montserrat',sans-serif;font-size:13px;background:var(--white);color:var(--text-dark);cursor:pointer;}
+.select-filter:focus{outline:none;border-color:var(--gold);}
+.lob-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;}
+.lob-marine{background:#e8f4fd;color:#2980b9;}
+.lob-fire{background:#fef0e7;color:#e67e22;}
+.lob-motor{background:#f0fff4;color:#27ae60;}
+.lob-aviation{background:#f3e8ff;color:#8e44ad;}
+.lob-cargo{background:#fff8e1;color:#f39c12;}
+.lob-liability{background:#e8faf1;color:#16a085;}
+
+#admin{background:var(--cream);}
+.admin-tabs{display:flex;gap:4px;background:var(--white);border-radius:var(--radius-sm);padding:4px;border:1px solid rgba(201,168,76,.2);box-shadow:var(--shadow-sm);margin-bottom:28px;}
+.admin-tab-btn{flex:1;padding:10px;border:none;border-radius:4px;background:transparent;color:var(--text-mid);font-family:'Montserrat',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;}
+.admin-tab-btn.active{background:var(--navy);color:var(--gold);}
+.admin-tab-btn:not(.active):hover{background:var(--cream);}
+.admin-tab-btn svg{width:16px;height:16px;}
+.div-section{background:var(--white);border-radius:var(--radius-md);border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;}
+.div-section-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:background .2s;}
+.div-section-header:hover{background:rgba(201,168,76,.05);}
+.div-section-header .ds-title{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:10px;}
+.div-section-header .ds-status{display:flex;gap:8px;align-items:center;}
+.ds-pill{font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px;}
+.ds-pill.ok{background:#e8faf1;color:#27ae60;}
+.ds-pill.empty{background:#f5f5f5;color:#999;}
+.ds-chevron{transition:transform .3s;color:var(--text-light);}
+.ds-chevron.open{transform:rotate(180deg);}
+.div-section-body{padding:0 20px 20px;border-top:1px solid rgba(11,31,58,.06);}
+.input-month-selector{display:flex;align-items:center;gap:10px;margin:16px 0 12px;flex-wrap:wrap;}
+.input-month-selector label{font-size:11px;font-weight:700;color:var(--text-mid);letter-spacing:.04em;}
+.input-month-pills{display:flex;gap:4px;flex-wrap:wrap;}
+.imp{padding:4px 10px;border:1.5px solid rgba(11,31,58,.1);border-radius:14px;font-size:11px;font-weight:600;background:var(--white);color:var(--text-mid);cursor:pointer;transition:var(--transition);font-family:'Montserrat',sans-serif;}
+.imp.active{background:var(--navy);color:var(--gold);border-color:var(--navy);}
+.imp:hover:not(.active){border-color:var(--gold);}
+.input-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+.input-block{background:var(--cream);border-radius:var(--radius-sm);padding:14px;}
+.input-block-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.input-sub-row{margin-bottom:8px;}
+.input-sub-label{font-size:10px;font-weight:600;color:var(--text-light);margin-bottom:4px;display:block;}
+.rp-input-wrap{display:flex;align-items:center;border:1.5px solid rgba(11,31,58,.12);border-radius:var(--radius-sm);background:var(--white);overflow:hidden;transition:border-color .2s;}
+.rp-input-wrap:focus-within{border-color:var(--gold);}
+.rp-prefix{padding:8px 10px;font-size:11px;font-weight:700;color:var(--text-light);background:var(--cream);border-right:1px solid rgba(11,31,58,.08);white-space:nowrap;}
+.rp-input{flex:1;padding:8px 10px;border:none;outline:none;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:var(--text-dark);background:transparent;}
+.input-total-row{margin-top:10px;padding-top:8px;border-top:1.5px dashed rgba(201,168,76,.3);display:flex;justify-content:space-between;align-items:center;}
+.itl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light);}
+.itv{font-size:13px;font-weight:700;color:var(--navy);}
+.save-div-btn{display:flex;justify-content:flex-end;margin-top:6px;}
+.jk-admin-card{background:var(--white);border-radius:var(--radius-md);padding:24px;border:1px solid rgba(201,168,76,.15);box-shadow:var(--shadow-sm);margin-bottom:16px;}
+.jk-admin-card h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.jk-admin-card p{font-size:12px;color:var(--text-light);margin-bottom:18px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-mid);margin-bottom:5px;}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid rgba(11,31,58,.12);border-radius:var(--radius-sm);font-family:'Montserrat',sans-serif;font-size:12px;color:var(--text-dark);transition:border-color .2s;}
+.form-input:focus{outline:none;border-color:var(--gold);}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px;}
+.entries-list{margin-top:16px;}
+.entry-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--cream);border-radius:var(--radius-sm);margin-bottom:6px;font-size:12px;}
+.entry-item .ei-no{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.entry-item .ei-info{flex:1;}
+.entry-item .ei-account{font-weight:700;color:var(--navy);}
+.entry-item .ei-meta{font-size:10px;color:var(--text-light);margin-top:2px;}
+.entry-item .ei-premi{font-weight:700;color:var(--text-mid);white-space:nowrap;}
+.entry-item .ei-del{width:28px;height:28px;border-radius:4px;background:none;border:1px solid rgba(231,76,60,.3);color:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+.entry-item .ei-del:hover{background:var(--danger);color:var(--white);}
+.entry-item .ei-del svg{width:12px;height:12px;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(11,31,58,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--white);border-radius:var(--radius-lg);padding:40px;width:400px;max-width:90vw;box-shadow:var(--shadow-lg);transform:scale(.92) translateY(16px);transition:transform .35s cubic-bezier(.4,0,.2,1);border:1px solid rgba(201,168,76,.2);}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+.modal h2{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--text-light);margin-bottom:24px;}
+.modal-input{width:100%;padding:12px 16px;border:1.5px solid rgba(11,31,58,.15);border-radius:var(--radius-sm);font-family:'Montserrat',sans-serif;font-size:14px;margin-bottom:8px;transition:border-color .2s;}
+.modal-input:focus{outline:none;border-color:var(--gold);}
+.modal-error{font-size:12px;color:var(--danger);height:16px;margin-bottom:12px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);} }
+.shake{animation:shake .4s ease;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.animate-up {animation:fadeUp .5s ease forwards;}
+.animate-up-2{animation:fadeUp .5s .1s ease both;}
+.animate-up-3{animation:fadeUp .5s .2s ease both;}
+.animate-up-4{animation:fadeUp .5s .3s ease both;}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .home-grid,.breakdown-grid,.division-overview-grid,.input-grid-3{grid-template-columns:1fr 1fr;}
+  .summary-grid{grid-template-columns:1fr 1fr;}
+  .form-row-3{grid-template-columns:1fr 1fr;}
+  .page-content{padding:24px 20px 60px;}
+  .top-header{padding:0 20px;}
+}
+@media(max-width:600px){
+  .home-grid,.summary-grid,.progress-grid,.breakdown-grid,.division-overview-grid,.input-grid-3,.form-row,.form-row-3{grid-template-columns:1fr;}
+  .tp-value{font-size:28px;}
+  .view-toggle{width:100%;}
+  .view-btn{flex:1;justify-content:center;}
+  .admin-tab-btn span{display:none;}
+}
+
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(11,31,58,.2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(11,31,58,.35);}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="page page-out">
+  <div class="top-header">
+    <div class="brand">
+      Executive Dashboard
+    </div>
+    <div class="header-right">
+      <div class="header-meta">
+        <div class="today" id="today-date"></div>
+        <div>Sistem Informasi Eksekutif</div>
+      </div>
+      <div class="lock-btn" onclick="openAdminModal()" title="Admin Login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div style="margin-bottom:36px;" class="animate-up">
+      <div class="section-title">Selamat Datang</div>
+      <div class="section-sub">Pilih modul yang ingin Anda akses</div>
+    </div>
+    <div class="home-grid">
+      <div class="menu-card animate-up-2" onclick="showPage('jasindo')">
+        <div class="menu-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Jasindo Business Performance Tracking</h3>
+        <p>Monitor realisasi premi, forecast, dan RKAP per divisi. Analisis performa bisnis secara real-time dengan visualisasi data interaktif.</p>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="menu-card animate-up-3" onclick="showPage('jamkrindo')">
+        <div class="menu-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <h3>Jamkrindo Referral Tracking</h3>
+        <p>Pantau seluruh pipeline referral, estimasi premi, konfirmasi pengajuan, dan performa per Representative Office secara terpusat.</p>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JASINDO PAGE -->
+<div id="jasindo" class="page page-out">
+  <div class="top-header">
+    <div class="brand">
+      Jasindo Business Performance
+    </div>
+    <div class="header-right">
+      <div class="header-meta"><div class="today" id="jasindo-date"></div></div>
+      <div class="lock-btn" onclick="openAdminModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <button class="back-btn" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Kembali ke Home
+    </button>
+    <div class="animate-up" style="margin-bottom:20px;">
+      <div class="section-title">Business Performance Tracking</div>
+      <div class="section-sub" id="jasindo-period-label">Data Premi per Divisi — 2024</div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-toggle animate-up-2">
+      <button class="view-btn active" id="btn-overview" onclick="switchView('overview')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Overview Semua Divisi
+      </button>
+      <button class="view-btn" id="btn-detail" onclick="switchView('detail')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Detail per Divisi
+      </button>
+    </div>
+
+    <!-- PANEL OVERVIEW -->
+    <div id="panel-overview">
+      <div class="summary-grid animate-up-3" id="ov-summary-grid"></div>
+      <div class="progress-grid animate-up-4">
+        <div class="progress-card" id="ov-pcard-rkap">
+          <div class="pc-label">% Realisasi vs RKAP — Semua Divisi</div>
+          <div class="pc-value" id="ov-pct-rkap">—</div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="ov-pbar-rkap" style="width:0%"></div></div>
+        </div>
+        <div class="progress-card" id="ov-pcard-forecast">
+          <div class="pc-label">% Realisasi vs Forecast — Semua Divisi</div>
+          <div class="pc-value" id="ov-pct-forecast">—</div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="ov-pbar-forecast" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div style="margin:8px 0 10px;font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:.08em;text-transform:uppercase;">Performa per Divisi — klik untuk melihat detail</div>
+      <div class="division-overview-grid animate-up-4" id="div-ov-cards"></div>
+      <div class="chart-container animate-up-4">
+        <h4>Total RKAP vs Forecast vs Realisasi per Divisi (YTD 2024)</h4>
+        <div class="chart-wrapper"><canvas id="overviewChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- PANEL DETAIL -->
+    <div id="panel-detail" class="hidden">
+      <div class="division-tabs animate-up-2">
+        <button class="tab-btn active" onclick="switchDivision(this,'oilgas')">Oil &amp; Gas</button>
+        <button class="tab-btn" onclick="switchDivision(this,'bumn1')">BUMN I</button>
+        <button class="tab-btn" onclick="switchDivision(this,'bumn2')">BUMN II</button>
+        <button class="tab-btn" onclick="switchDivision(this,'broker')">Broker</button>
+        <button class="tab-btn" onclick="switchDivision(this,'app')">APP</button>
+        <button class="tab-btn" onclick="switchDivision(this,'jld')">JLD</button>
+      </div>
+      <div class="summary-grid animate-up-3">
+        <div class="summary-card">
+          <div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="sc-label">RKAP</div>
+          <div class="sc-value" id="val-rkap">—</div>
+          <div class="sc-sub" id="val-rkap-sub">—</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="sc-label">Forecast</div>
+          <div class="sc-value" id="val-forecast">—</div>
+          <div class="sc-sub" id="val-forecast-sub">—</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-icon" style="background:#e8faf1;color:var(--success);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="sc-label">Realisasi</div>
+          <div class="sc-value" id="val-realisasi">—</div>
+          <div class="sc-sub" id="val-realisasi-sub">—</div>
+        </div>
+      </div>
+      <div class="progress-grid animate-up-4">
+        <div class="progress-card" id="pcard-rkap">
+          <div class="pc-label">% Realisasi vs RKAP</div>
+          <div class="pc-value" id="pct-rkap">—</div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="pbar-rkap" style="width:0%"></div></div>
+        </div>
+        <div class="progress-card" id="pcard-forecast">
+          <div class="pc-label">% Realisasi vs Forecast</div>
+          <div class="pc-value" id="pct-forecast">—</div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="pbar-forecast" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="chart-container animate-up-4">
+        <h4 id="detail-chart-title">—</h4>
+        <div class="chart-wrapper" style="height:260px;"><canvas id="jasindoChart"></canvas></div>
+      </div>
+      <div class="table-container animate-up-4">
+        <table>
+          <thead><tr>
+            <th>Bulan</th>
+            <th>RKAP New</th><th>RKAP Renewal</th><th>RKAP Total</th>
+            <th>Forecast New</th><th>Forecast Renewal</th><th>Forecast Total</th>
+            <th>Realisasi New</th><th>Realisasi Renewal</th><th>Realisasi Total</th>
+            <th>% vs RKAP</th><th>% vs Forecast</th>
+          </tr></thead>
+          <tbody id="jasindoTbody"></tbody>
+        </table>
+      </div>
+      <div class="explanation-section animate-up-4" id="deviation-explanation" style="display:none;">
+        <h4>Penjelasan Deviasi Forecast</h4>
+        <div class="explanation-content" id="explanation-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JAMKRINDO PAGE -->
+<div id="jamkrindo" class="page page-out">
+  <div class="top-header">
+    <div class="brand">
+      <img src="img_logo_jasindo.png" alt="JASINDO" style="width:40px;height:auto;">
+      Jamkrindo Referral
+    </div>
+    <div class="header-right">
+      <div class="header-meta"><div class="today" id="jamkrindo-date"></div></div>
+      <div class="lock-btn" onclick="openAdminModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <button class="back-btn" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Kembali ke Home
+    </button>
+    <div class="total-premi-card animate-up">
+      <div class="tp-badge">Referral Pipeline</div>
+      <div class="tp-label">Total Estimasi Premi</div>
+      <div class="tp-value" id="total-premi-val">Rp 0</div>
+      <div class="tp-sub" id="total-premi-count">0 transaksi referral</div>
+    </div>
+    <div class="filter-row animate-up-2">
+      <input type="text" class="search-input" id="jkSearch" placeholder="🔍  Cari account, RO, atau LOB..." oninput="filterJamkrindo()">
+      <select class="select-filter" id="jkLobFilter" onchange="filterJamkrindo()">
+        <option value="">Semua LOB</option>
+        <option>Harta Benda</option>
+        <option>Rekayasa</option>
+        <option>Keuangan</option>
+        <option>Kesehatan</option>
+        <option>Rangka Pesawat</option>
+        <option>Tanggung Gugat</option>
+        <option>Kendaraan Bermotor</option>
+        <option>Energy Offshore</option>
+        <option>Energy Onshore</option>
+        <option>Satelit</option>
+        <option>Aneka</option>
+        <option>Kecelakaan Diri</option>
+        <option>Pengangkutan</option>
+        <option>Rangka Kapal</option>
+      </select>
+      <select class="select-filter" id="jkROFilter" onchange="filterJamkrindo()">
+        <option value="">Semua RO</option>
+        <option>Head Office Asuransi Jasindo</option>
+        <option>Jayapura</option>
+        <option>Sorong</option>
+        <option>Ambon</option>
+        <option>Makassar</option>
+        <option>Palu</option>
+        <option>Manado</option>
+        <option>Banjarmasin</option>
+        <option>Balikpapan</option>
+        <option>Samarinda</option>
+        <option>Sampit</option>
+        <option>Pontianak</option>
+        <option>Kupang</option>
+        <option>Mataram</option>
+        <option>Denpasar</option>
+        <option>Surabaya</option>
+        <option>Yogyakarta</option>
+        <option>Solo</option>
+        <option>Semarang</option>
+        <option>Serang</option>
+        <option>Bogor</option>
+        <option>Bandung</option>
+        <option>Jakarta 2</option>
+        <option>Bandar Lampung</option>
+        <option>Palembang</option>
+        <option>Jambi</option>
+        <option>Pekanbaru</option>
+        <option>Batam</option>
+        <option>Padang</option>
+        <option>Medan</option>
+      </select>
+      <button class="btn btn-outline btn-sm" onclick="exportCSV()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+    </div>
+    <div class="table-container animate-up-3">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th><th>Bulan</th><th>Account</th>
+            <th>Representative Office</th><th>Est. Premi (Rp)</th>
+            <th>LOB</th><th>Konfirmasi Pengajuan</th>
+          </tr>
+        </thead>
+        <tbody id="jamkrindoTbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;text-align:center;font-size:12px;color:var(--text-light);" id="jk-empty-msg" class="hidden">Belum ada data. Silakan input melalui menu Admin.</div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="admin" class="page page-out">
+  <div class="top-header">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Admin Panel
+    </div>
+    <div class="header-right">
+      <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Logout Admin</button>
+    </div>
+  </div>
+  <div class="page-content">
+    <button class="back-btn" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Kembali ke Home
+    </button>
+    <div class="animate-up" style="margin-bottom:20px;">
+      <div class="section-title">Panel Administrasi</div>
+      <div class="section-sub">Input data manual untuk dashboard</div>
+    </div>
+
+    <!-- Admin tabs -->
+    <div class="admin-tabs animate-up-2">
+      <button class="admin-tab-btn active" id="atab-jasindo" onclick="switchAdminTab('jasindo')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Jasindo Business Performance</span>
+      </button>
+      <button class="admin-tab-btn" id="atab-jamkrindo" onclick="switchAdminTab('jamkrindo')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg>
+        <span>Jamkrindo Referral</span>
+      </button>
+    </div>
+
+    <!-- Jasindo Admin -->
+    <div id="apanel-jasindo" class="animate-up-3">
+      <div style="font-size:12px;color:var(--text-mid);margin-bottom:18px;line-height:1.7;background:var(--white);border-radius:var(--radius-md);padding:14px 18px;border:1px solid rgba(201,168,76,.15);">
+        <strong>Cara pengisian:</strong> Pilih divisi → pilih bulan → isi nilai RKAP, Forecast, dan Realisasi (masing-masing dibagi menjadi <em>New</em> dan <em>Renewal</em>) → klik <strong>Simpan</strong>. Total akan dihitung otomatis.
+      </div>
+      <div id="admin-jasindo-sections"></div>
+    </div>
+
+    <!-- Jamkrindo Admin -->
+    <div id="apanel-jamkrindo" class="hidden animate-up-3">
+      <div class="jk-admin-card">
+        <h3>➕ Tambah Entri Referral Baru</h3>
+        <p>Isi form berikut untuk menambahkan data referral ke tabel Jamkrindo.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Bulan</label>
+            <select class="form-input" id="jk-input-bulan">
+              <option value="">-- Pilih Bulan --</option>
+              <option>Januari</option><option>Februari</option><option>Maret</option>
+              <option>April</option><option>Mei</option><option>Juni</option>
+              <option>Juli</option><option>Agustus</option><option>September</option>
+              <option>Oktober</option><option>November</option><option>Desember</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nama Account / Perusahaan</label>
+            <input type="text" class="form-input" id="jk-input-account" placeholder="PT ...">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Representative Office</label>
+            <select class="form-input" id="jk-input-ro">
+              <option value="">-- Pilih RO --</option>
+              <option>Head Office Asuransi Jasindo</option>
+              <option>Jayapura</option>
+              <option>Sorong</option>
+              <option>Ambon</option>
+              <option>Makassar</option>
+              <option>Palu</option>
+              <option>Manado</option>
+              <option>Banjarmasin</option>
+              <option>Balikpapan</option>
+              <option>Samarinda</option>
+              <option>Sampit</option>
+              <option>Pontianak</option>
+              <option>Kupang</option>
+              <option>Mataram</option>
+              <option>Denpasar</option>
+              <option>Surabaya</option>
+              <option>Yogyakarta</option>
+              <option>Solo</option>
+              <option>Semarang</option>
+              <option>Serang</option>
+              <option>Bogor</option>
+              <option>Bandung</option>
+              <option>Jakarta 2</option>
+              <option>Bandar Lampung</option>
+              <option>Palembang</option>
+              <option>Jambi</option>
+              <option>Pekanbaru</option>
+              <option>Batam</option>
+              <option>Padang</option>
+              <option>Medan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>LOB (Line of Business)</label>
+            <select class="form-input" id="jk-input-lob">
+              <option value="">-- Pilih LOB --</option>
+              <option>Harta Benda</option>
+              <option>Rekayasa</option>
+              <option>Keuangan</option>
+              <option>Kesehatan</option>
+              <option>Rangka Pesawat</option>
+              <option>Tanggung Gugat</option>
+              <option>Kendaraan Bermotor</option>
+              <option>Energy Offshore</option>
+              <option>Energy Onshore</option>
+              <option>Satelit</option>
+              <option>Aneka</option>
+              <option>Kecelakaan Diri</option>
+              <option>Pengangkutan</option>
+              <option>Rangka Kapal</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estimasi Premi (Rp)</label>
+            <div class="rp-input-wrap"><span class="rp-prefix">Rp</span><input type="number" class="rp-input" id="jk-input-premi" placeholder="0" min="0"></div>
+          </div>
+          <div class="form-group">
+            <label>Tanggal Konfirmasi Pengajuan</label>
+            <input type="date" class="form-input" id="jk-input-tanggal">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-sm" onclick="addJamkrindoEntry()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tambah Entri
+          </button>
+        </div>
+      </div>
+
+      <div class="jk-admin-card">
+        <h3>📋 Daftar Entri Referral</h3>
+        <p>Total <strong id="jk-entry-count">0</strong> entri tersimpan. Klik ikon hapus untuk menghapus entri.</p>
+        <div class="entries-list" id="jk-entries-list">
+          <div style="color:var(--text-light);font-size:13px;text-align:center;padding:20px;">Belum ada entri.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL LOGIN -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <h2>🔐 Admin Login</h2>
+    <p>Masukkan password untuk mengakses panel administrasi</p>
+    <input type="password" class="modal-input" id="adminPassword" placeholder="Password" onkeydown="if(event.key==='Enter')verifyAdmin()">
+    <div class="modal-error" id="adminError"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAdminModal()">Batal</button>
+      <button class="btn btn-primary" onclick="verifyAdmin()">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─────────────────────────────────────────────
+   CONSTANTS
+───────────────────────────────────────────── */
+const MONTHS   = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+const MONTHS_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const DIVISIONS = ['oilgas','bumn1','bumn2','broker','app','jld'];
+const DIV_LABELS = {oilgas:'Oil & Gas',bumn1:'BUMN I',bumn2:'BUMN II',broker:'Broker',app:'APP',jld:'JLD'};
+const ADMIN_PASS = 'password123';
+
+/* ─────────────────────────────────────────────
+   DEFAULT DATA STRUCTURE
+   jasindo[divCode][monthIdx] = {rkap_new, rkap_ren, fc_new, fc_ren, real_new, real_ren}
+───────────────────────────────────────────── */
+function defaultJasindoData() {
+  const data = {};
+  DIVISIONS.forEach(div => {
+    data[div] = {};
+    for (let m = 0; m < 12; m++) {
+      data[div][m] = {rkap_new:0,rkap_ren:0,fc_new:0,fc_ren:0,real_new:0,real_ren:0,fc_deviation_explanation:''};
+    }
+  });
+  return data;
+}
+
+/* ─────────────────────────────────────────────
+   STORAGE HELPERS
+───────────────────────────────────────────── */
+function loadJasindoData() {
+  try {
+    const raw = localStorage.getItem('jasindo_data');
+    if (!raw) return defaultJasindoData();
+    const parsed = JSON.parse(raw);
+    // Ensure all divisions/months exist
+    const def = defaultJasindoData();
+    DIVISIONS.forEach(div => {
+      if (!parsed[div]) parsed[div] = def[div];
+      for (let m = 0; m < 12; m++) {
+        if (!parsed[div][m]) parsed[div][m] = def[div][m];
+      }
+    });
+    return parsed;
+  } catch(e){ return defaultJasindoData(); }
+}
+
+function saveJasindoData(data) {
+  localStorage.setItem('jasindo_data', JSON.stringify(data));
+}
+
+function loadJamkrindoData() {
+  try {
+    const raw = localStorage.getItem('jamkrindo_data');
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){ return []; }
+}
+
+function saveJamkrindoData(data) {
+  localStorage.setItem('jamkrindo_data', JSON.stringify(data));
+}
+
+/* ─────────────────────────────────────────────
+   STATE
+───────────────────────────────────────────── */
+let currentDivision   = 'oilgas';
+let currentMonth      = new Date().getMonth();
+let currentView       = 'overview';
+let currentAdminTab   = 'jasindo';
+let adminDivMonths    = {}; // selected month per division in admin
+let jasindoChart      = null;
+let overviewChart     = null;
+let filteredJamkrindo = [];
+
+/* ─────────────────────────────────────────────
+   UTILS
+───────────────────────────────────────────── */
+const fmt = n => {
+  if (!n || n === 0) return 'Rp 0';
+  if (n >= 1e12) return 'Rp '+(n/1e12).toFixed(2)+' T';
+  if (n >= 1e9)  return 'Rp '+(n/1e9).toFixed(2)+' M';
+  if (n >= 1e6)  return 'Rp '+(n/1e6).toFixed(1)+' M';
+  return 'Rp '+n.toLocaleString('id-ID');
+};
+const fmtFull = n => 'Rp '+(n||0).toLocaleString('id-ID');
+const pctCls  = p => p >= 90 ? 'green' : p >= 70 ? 'yellow' : 'red';
+const pct     = (a,b) => b > 0 ? Math.round((a/b)*100) : 0;
+const totalOf = (rec, type) => (rec[type+'_new']||0) + (rec[type+'_ren']||0);
+const setDate = id => { const e=document.getElementById(id); if(e) e.textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); };
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast toast-'+type+' show';
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+/* ─────────────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────────────── */
+function showPage(page) {
+  ['splash','home','jasindo','jamkrindo','admin'].forEach(p => {
+    const el = document.getElementById(p);
+    if (!el) return;
+    if (p===page){ el.classList.remove('page-out'); el.classList.add('page-in'); el.scrollTop=0; }
+    else         { el.classList.remove('page-in');  el.classList.add('page-out'); }
+  });
+  if (page==='jasindo')  setTimeout(()=>{ currentView==='overview'?renderOverview():renderJasindoDetail(); }, 80);
+  if (page==='jamkrindo') renderJamkrindo();
+  if (page==='admin')     renderAdmin();
+  setDate('today-date'); setDate('jasindo-date'); setDate('jamkrindo-date');
+}
+
+function initSplash(){ setTimeout(()=>showPage('home'), 2800); }
+
+/* ─────────────────────────────────────────────
+   JASINDO — VIEW SWITCH
+───────────────────────────────────────────── */
+function switchView(view) {
+  currentView = view;
+  const btnOv = document.getElementById('btn-overview');
+  const btnDet = document.getElementById('btn-detail');
+  if (btnOv) btnOv.classList.toggle('active', view==='overview');
+  if (btnDet) btnDet.classList.toggle('active', view==='detail');
+  const panOv = document.getElementById('panel-overview');
+  const panDet = document.getElementById('panel-detail');
+  if (panOv) panOv.classList.toggle('hidden', view!=='overview');
+  if (panDet) panDet.classList.toggle('hidden', view!=='detail');
+  view==='overview' ? renderOverview() : renderJasindoDetail();
+}
+
+/* ─────────────────────────────────────────────
+   JASINDO — OVERVIEW
+───────────────────────────────────────────── */
+function renderOverview() {
+  const data = loadJasindoData();
+
+  // Aggregate TOTAL across all divisions, all months
+  let totRkap=0, totFc=0, totReal=0;
+  DIVISIONS.forEach(div => {
+    for(let m=0;m<12;m++){
+      const r = data[div][m];
+      totRkap += totalOf(r,'rkap');
+      totFc   += totalOf(r,'fc');
+      totReal += totalOf(r,'real');
+    }
+  });
+
+  // Scale from millions to absolute
+  const scale = 1e6;
+  const tR = totRkap*scale, tF = totFc*scale, tRe = totReal*scale;
+
+  // Summary cards
+  const ovGrid = document.getElementById('ov-summary-grid');
+  if (ovGrid) {
+    ovGrid.innerHTML = `
+      <div class="summary-card">
+        <div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div class="sc-label">Total RKAP</div>
+        <div class="sc-value">${fmt(tR)}</div>
+        <div class="sc-sub">Semua Divisi — Target Tahunan</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="sc-label">Total Forecast</div>
+        <div class="sc-value">${fmt(tF)}</div>
+        <div class="sc-sub">Semua Divisi — Proyeksi Tahunan</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon" style="background:#e8faf1;color:var(--success);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Total Realisasi YTD</div>
+        <div class="sc-value">${fmt(tRe)}</div>
+        <div class="sc-sub">Semua Divisi — Akumulasi</div>
+      </div>`;
+  }
+
+  // Progress
+  const pR = pct(tRe, tR), pF = pct(tRe, tF);
+  const ovPc = document.getElementById('ov-pcard-rkap');
+  const ovPcF = document.getElementById('ov-pcard-forecast');
+  if (ovPc) ovPc.className = 'progress-card pct-'+pctCls(pR);
+  if (ovPcF) ovPcF.className = 'progress-card pct-'+pctCls(pF);
+  const pctRkap = document.getElementById('ov-pct-rkap');
+  const pctFc = document.getElementById('ov-pct-forecast');
+  if (pctRkap) pctRkap.textContent = pR+'%';
+  if (pctFc) pctFc.textContent = pF+'%';
+  setTimeout(()=>{
+    const pbR = document.getElementById('ov-pbar-rkap');
+    const pbF = document.getElementById('ov-pbar-forecast');
+    if (pbR) pbR.style.width = Math.min(pR,100)+'%';
+    if (pbF) pbF.style.width = Math.min(pF,100)+'%';
+  },150);
+
+  // Per-division cards
+  const cards = document.getElementById('div-ov-cards');
+  if (cards) {
+    cards.innerHTML = '';
+    DIVISIONS.forEach(div => {
+      let dr=0,df=0,dre=0;
+      for(let m=0;m<12;m++){
+        const r=data[div][m];
+        dr +=totalOf(r,'rkap'); df+=totalOf(r,'fc'); dre+=totalOf(r,'real');
+      }
+      const dp = pct(dre,dr);
+      const cls = pctCls(dp);
+      const barColor = cls==='green'?'#2ecc71':cls==='yellow'?'#f39c12':'#e74c3c';
+      cards.innerHTML += `
+        <div class="div-ov-card" onclick="goDetailDivision('${div}')">
+          <div class="doc-name">${DIV_LABELS[div]}<span class="doc-badge ${cls}">${dp}%</span></div>
+          <div class="div-ov-row"><span class="div-ov-lbl">RKAP</span><span class="div-ov-val">${fmt(dr*scale)}</span></div>
+          <div class="div-ov-row"><span class="div-ov-lbl">Forecast</span><span class="div-ov-val">${fmt(df*scale)}</span></div>
+          <div class="div-ov-row"><span class="div-ov-lbl">Realisasi</span><span class="div-ov-val">${fmt(dre*scale)}</span></div>
+          <div class="div-ov-bar"><div class="div-ov-bar-fill" style="width:${Math.min(dp,100)}%;background:${barColor};"></div></div>
+          <div class="div-ov-hint">Klik untuk detail →</div>
+        </div>`;
+    });
+  }
+
+  // Overview chart
+  const ctx = document.getElementById('overviewChart');
+  if (!ctx) return;
+  if (overviewChart) overviewChart.destroy();
+  const ctxActual = ctx.getContext('2d');
+  const rkapArr  = DIVISIONS.map(d=>{ let s=0; for(let m=0;m<12;m++) s+=totalOf(data[d][m],'rkap'); return s; });
+  const fcArr    = DIVISIONS.map(d=>{ let s=0; for(let m=0;m<12;m++) s+=totalOf(data[d][m],'fc');   return s; });
+  const realArr  = DIVISIONS.map(d=>{ let s=0; for(let m=0;m<12;m++) s+=totalOf(data[d][m],'real'); return s; });
+  overviewChart = new Chart(ctxActual,{
+    type:'bar',
+    data:{
+      labels:DIVISIONS.map(d=>DIV_LABELS[d]),
+      datasets:[
+        {label:'RKAP',    data:rkapArr, backgroundColor:'rgba(26,58,107,.65)',borderColor:'#1B3A6B',borderWidth:1.5,borderRadius:4},
+        {label:'Forecast',data:fcArr,   backgroundColor:'rgba(201,168,76,.65)',borderColor:'#C9A84C',borderWidth:1.5,borderRadius:4},
+        {label:'Realisasi',data:realArr,backgroundColor:'rgba(46,204,113,.70)',borderColor:'#27ae60',borderWidth:1.5,borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{font:{family:'Montserrat',size:11},color:'#4A5E7A'}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.parsed.y*scale)}`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{family:'Montserrat',size:11}}},
+        y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Montserrat',size:10},callback:v=>v>0?fmt(v*scale):0}}
+      }
+    }
+  });
+}
+
+function goDetailDivision(div) {
+  currentDivision = div;
+  const order = DIVISIONS;
+  const tabs = document.querySelectorAll('#panel-detail .tab-btn');
+  tabs.forEach((t,i)=>t.classList.toggle('active',order[i]===div));
+  switchView('detail');
+}
+
+/* ─────────────────────────────────────────────
+   JASINDO — MONTH PILLS
+───────────────────────────────────────────── */
+function buildMonthPills() {
+  const c = document.getElementById('month-pills');
+  if (!c) return;
+  c.innerHTML = '';
+  MONTHS.forEach((m,i)=>{
+    const b = document.createElement('button');
+    b.className = 'month-pill'+(i===currentMonth?' active':'');
+    b.textContent = m;
+    b.onclick = ()=>selectMonth(i);
+    c.appendChild(b);
+  });
+}
+function selectMonth(idx) {
+  currentMonth = idx;
+  document.querySelectorAll('.month-pill').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  renderJasindoDetail();
+}
+
+/* ─────────────────────────────────────────────
+   JASINDO — DETAIL (1 divisi, 1 bulan)
+───────────────────────────────────────────── */
+function switchDivision(btn, div) {
+  document.querySelectorAll('#panel-detail .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentDivision = div;
+  renderJasindoDetail();
+}
+
+function renderJasindoDetail() {
+  const data = loadJasindoData();
+  const rec  = data[currentDivision][currentMonth];
+  const scale = 1e6;
+
+  const rkap_new = rec.rkap_new*scale, rkap_ren = rec.rkap_ren*scale;
+  const fc_new   = rec.fc_new*scale,   fc_ren   = rec.fc_ren*scale;
+  const real_new = rec.real_new*scale, real_ren = rec.real_ren*scale;
+  const rkap_tot = rkap_new+rkap_ren;
+  const fc_tot   = fc_new+fc_ren;
+  const real_tot = real_new+real_ren;
+
+  const lbl = MONTHS[currentMonth]+' 2024 — '+DIV_LABELS[currentDivision];
+  const dtit = document.getElementById('detail-chart-title');
+  if (dtit) dtit.textContent = lbl;
+
+  // Summary cards
+  const sumGrid = document.querySelectorAll('#panel-detail .summary-grid')[0];
+  if (sumGrid) {
+    sumGrid.innerHTML = `
+      <div class="summary-card">
+        <div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div class="sc-label">RKAP</div>
+        <div class="sc-value">${fmt(rkap_tot)}</div>
+        <div class="sc-sub">${MONTHS[currentMonth]} — ${DIV_LABELS[currentDivision]}</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="sc-label">Forecast</div>
+        <div class="sc-value">${fmt(fc_tot)}</div>
+        <div class="sc-sub">${MONTHS[currentMonth]} — ${DIV_LABELS[currentDivision]}</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon" style="background:#e8faf1;color:var(--success);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="sc-label">Realisasi</div>
+        <div class="sc-value">${fmt(real_tot)}</div>
+        <div class="sc-sub">${MONTHS[currentMonth]} — ${DIV_LABELS[currentDivision]}</div>
+      </div>`;
+  }
+
+  // Progress
+  const pR = pct(real_tot,rkap_tot), pF = pct(real_tot,fc_tot);
+  const progGrid = document.querySelectorAll('#panel-detail .progress-grid')[0];
+  if (progGrid) {
+    progGrid.innerHTML = `
+      <div class="progress-card pct-${pctCls(pR)}">
+        <div class="pc-label">% Realisasi vs RKAP</div>
+        <div class="pc-value">${pR}%</div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.min(pR,100)}%"></div></div>
+      </div>
+      <div class="progress-card pct-${pctCls(pF)}">
+        <div class="pc-label">% Realisasi vs Forecast</div>
+        <div class="pc-value">${pF}%</div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.min(pF,100)}%"></div></div>
+      </div>`;
+  }
+
+  // Chart
+  const ctx = document.getElementById('jasindoChart');
+  if (!ctx) return;
+  if (jasindoChart) jasindoChart.destroy();
+  const ctxActual = ctx.getContext('2d');
+  jasindoChart = new Chart(ctxActual,{
+    type:'bar',
+    data:{
+      labels:['RKAP','Forecast','Realisasi'],
+      datasets:[
+        {label:'New',   data:[rec.rkap_new,rec.fc_new,rec.real_new],  backgroundColor:'rgba(26,58,107,.75)',borderColor:'#1B3A6B',borderWidth:1.5,borderRadius:6},
+        {label:'Renewal',data:[rec.rkap_ren,rec.fc_ren,rec.real_ren],backgroundColor:'rgba(201,168,76,.75)',borderColor:'#C9A84C',borderWidth:1.5,borderRadius:6}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{font:{family:'Montserrat',size:11},color:'#4A5E7A'}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.parsed.y*scale)}`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{family:'Montserrat',size:12},color:'#0B1F3A'}},
+        y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Montserrat',size:10},callback:v=>v>0?fmt(v*scale):0}}
+      }
+    }
+  });
+
+  // Table
+  const tbody = document.getElementById('jasindoTbody');
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td><strong>${MONTHS[currentMonth]}</strong></td>
+        <td>${fmtFull(rkap_new)}</td><td>${fmtFull(rkap_ren)}</td><td><strong>${fmtFull(rkap_tot)}</strong></td>
+        <td>${fmtFull(fc_new)}</td><td>${fmtFull(fc_ren)}</td><td><strong>${fmtFull(fc_tot)}</strong></td>
+        <td>${fmtFull(real_new)}</td><td>${fmtFull(real_ren)}</td><td><strong>${fmtFull(real_tot)}</strong></td>
+        <td><span class="pct-cell ${pctCls(pR)}">${pR}%</span></td>
+        <td><span class="pct-cell ${pctCls(pF)}">${pF}%</span></td>
+      </tr>`;
+  }
+
+  // Explanation
+  const expSec = document.getElementById('deviation-explanation');
+  const expCont = document.getElementById('explanation-content');
+  if (expSec && expCont) {
+    if (rec.fc_deviation_explanation && rec.fc_deviation_explanation.trim()) {
+      expCont.textContent = rec.fc_deviation_explanation;
+      expSec.style.display = 'block';
+    } else {
+      expSec.style.display = 'none';
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   JAMKRINDO
+───────────────────────────────────────────── */
+const lobClass = {Marine:'lob-marine',Fire:'lob-fire',Motor:'lob-motor',Aviation:'lob-aviation',Cargo:'lob-cargo',Liability:'lob-liability'};
+
+function renderJamkrindo() {
+  filteredJamkrindo = [...loadJamkrindoData()];
+  applyJKFilters();
+}
+function filterJamkrindo() {
+  const q=document.getElementById('jkSearch').value.toLowerCase();
+  const lob=document.getElementById('jkLobFilter').value;
+  const ro=document.getElementById('jkROFilter').value;
+  const all = loadJamkrindoData();
+  filteredJamkrindo = all.filter(r=>
+    (!q||r.account.toLowerCase().includes(q)||r.ro.toLowerCase().includes(q)||r.lob.toLowerCase().includes(q))&&
+    (!lob||r.lob===lob)&&(!ro||r.ro===ro));
+  applyJKFilters();
+}
+function applyJKFilters() {
+  const tbody=document.getElementById('jamkrindoTbody');
+  if (!tbody) return;
+  tbody.innerHTML='';
+  const empty=document.getElementById('jk-empty-msg');
+  const total=filteredJamkrindo.reduce((a,r)=>a+r.premi,0);
+  document.getElementById('total-premi-val').textContent=fmtFull(total);
+  document.getElementById('total-premi-count').textContent=filteredJamkrindo.length+' transaksi referral ditampilkan';
+  if(filteredJamkrindo.length===0){ if(empty) empty.classList.remove('hidden'); return; }
+  if(empty) empty.classList.add('hidden');
+  filteredJamkrindo.forEach((r,i)=>{
+    tbody.innerHTML+=`<tr>
+      <td>${i+1}</td><td>${r.bulan}</td><td><strong>${r.account}</strong></td>
+      <td>${r.ro}</td><td style="font-size:11px;">${fmtFull(r.premi)}</td>
+      <td><span class="lob-badge ${lobClass[r.lob]||''}">${r.lob}</span></td>
+      <td>${r.konfirmasi}</td>
+    </tr>`;
+  });
+}
+function exportCSV() {
+  const h=['No','Bulan','Account','Representative Office','Estimate Premi','LOB','Konfirmasi Pengajuan'];
+  const rows=filteredJamkrindo.map((r,i)=>[i+1,r.bulan,`"${r.account}"`,r.ro,r.premi,r.lob,r.konfirmasi].join(','));
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([[h.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'})),download:'jamkrindo_referral.csv'});
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ─────────────────────────────────────────────
+   ADMIN
+───────────────────────────────────────────── */
+function openAdminModal(){
+  document.getElementById('adminModal').classList.add('open');
+  document.getElementById('adminPassword').value='';
+  document.getElementById('adminError').textContent='';
+  setTimeout(()=>document.getElementById('adminPassword').focus(),200);
+}
+function closeAdminModal(){ document.getElementById('adminModal').classList.remove('open'); }
+
+function verifyAdmin(){
+  if(document.getElementById('adminPassword').value===ADMIN_PASS){
+    closeAdminModal(); localStorage.setItem('adminSession','1'); showPage('admin');
+  } else {
+    document.getElementById('adminError').textContent='❌ Password salah.';
+    const m=document.querySelector('.modal');
+    m.classList.add('shake'); setTimeout(()=>m.classList.remove('shake'),450);
+  }
+}
+function logoutAdmin(){ localStorage.removeItem('adminSession'); showPage('home'); }
+
+function switchAdminTab(tab){
+  currentAdminTab=tab;
+  const atb = document.getElementById('atab-jasindo');
+  const atbj = document.getElementById('atab-jamkrindo');
+  if (atb) atb.classList.toggle('active',tab==='jasindo');
+  if (atbj) atbj.classList.toggle('active',tab==='jamkrindo');
+  const apj = document.getElementById('apanel-jasindo');
+  const apjk = document.getElementById('apanel-jamkrindo');
+  if (apj) apj.classList.toggle('hidden',tab!=='jasindo');
+  if (apjk) apjk.classList.toggle('hidden',tab!=='jamkrindo');
+  if(tab==='jamkrindo') renderJKAdminList();
+}
+
+function renderAdmin(){
+  buildJasindoAdminSections();
+  renderJKAdminList();
+}
+
+/* ─── ADMIN: JASINDO INPUT ─── */
+function buildJasindoAdminSections(){
+  const container = document.getElementById('admin-jasindo-sections');
+  if (!container) return;
+  container.innerHTML = '';
+  const data = loadJasindoData();
+
+  DIVISIONS.forEach(div=>{
+    // default admin month for this div
+    if(adminDivMonths[div]===undefined) adminDivMonths[div] = new Date().getMonth();
+    const selectedM = adminDivMonths[div];
+    const rec = data[div][selectedM];
+    const hasData = Object.values(data[div]).some(r=>r.rkap_new>0||r.rkap_ren>0||r.real_new>0||r.real_ren>0);
+
+    const sec = document.createElement('div');
+    sec.className = 'div-section';
+    sec.id = 'sec-'+div;
+
+    // Build month pills HTML
+    const pillsHtml = MONTHS.map((m,i)=>
+      `<button class="imp${i===selectedM?' active':''}" onclick="adminSelectMonth('${div}',${i})">${m}</button>`
+    ).join('');
+
+    // Values for selected month
+    const vals = {
+      rkap_new: rec.rkap_new||0, rkap_ren: rec.rkap_ren||0,
+      fc_new:   rec.fc_new||0,   fc_ren:   rec.fc_ren||0,
+      real_new: rec.real_new||0, real_ren: rec.real_ren||0,
+      fc_deviation_explanation: rec.fc_deviation_explanation||'',
+    };
+    const rkapTot = (vals.rkap_new+vals.rkap_ren)*1e6;
+    const fcTot   = (vals.fc_new+vals.fc_ren)*1e6;
+    const realTot = (vals.real_new+vals.real_ren)*1e6;
+
+    sec.innerHTML = `
+      <div class="div-section-header" onclick="toggleSection('${div}')">
+        <div class="ds-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          ${DIV_LABELS[div]}
+        </div>
+        <div class="ds-status">
+          <span class="ds-pill ${hasData?'ok':'empty'}">${hasData?'Ada Data':'Kosong'}</span>
+          <svg class="ds-chevron" id="chev-${div}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="div-section-body hidden" id="body-${div}">
+        <div class="input-month-selector">
+          <label>Bulan:</label>
+          <div class="input-month-pills" id="imp-${div}">${pillsHtml}</div>
+        </div>
+
+        <div class="input-grid-3" id="input-grid-${div}">
+          <!-- RKAP -->
+          <div class="input-block">
+            <div class="input-block-title" style="color:#1B3A6B;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+              RKAP
+            </div>
+            <div class="input-sub-row">
+              <span class="input-sub-label">New (Miliar Rp)</span>
+              <div class="rp-input-wrap">
+                <span class="rp-prefix">M</span>
+                <input type="number" class="rp-input" id="inp-${div}-rkap_new" value="${vals.rkap_new}" min="0" oninput="updateInputTotal('${div}')">
+              </div>
+            </div>
+            <div class="input-sub-row">
+              <span class="input-sub-label">Renewal (Miliar Rp)</span>
+              <div class="rp-input-wrap">
+                <span class="rp-prefix">M</span>
+                <input type="number" class="rp-input" id="inp-${div}-rkap_ren" value="${vals.rkap_ren}" min="0" oninput="updateInputTotal('${div}')">
+              </div>
+            </div>
+            <div class="input-total-row">
+              <span class="itl">Total RKAP</span>
+              <span class="itv" id="itot-${div}-rkap">${fmt(rkapTot)}</span>
+            </div>
+          </div>
+
+          <!-- FORECAST -->
+          <div class="input-block">
+            <div class="input-block-title" style="color:#9a7a1a;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              FORECAST
+            </div>
+            <div class="input-sub-row">
+              <span class="input-sub-label">New (Miliar Rp)</span>
+              <div class="rp-input-wrap">
+                <span class="rp-prefix">M</span>
+                <input type="number" class="rp-input" id="inp-${div}-fc_new" value="${vals.fc_new}" min="0" oninput="updateInputTotal('${div}')">
+              </div>
+            </div>
+            <div class="input-sub-row">
+              <span class="input-sub-label">Renewal (Miliar Rp)</span>
+              <div class="rp-input-wrap">
+                <span class="rp-prefix">M</span>
+                <input type="number" class="rp-input" id="inp-${div}-fc_ren" value="${vals.fc_ren}" min="0" oninput="updateInputTotal('${div}')">
+              </div>
+            </div>
+            <div class="input-total-row">
+              <span class="itl">Total Forecast</span>
+              <span class="itv" id="itot-${div}-fc">${fmt(fcTot)}</span>
+            </div>
+          </div>
+
+          <!-- REALISASI -->
+          <div class="input-block">
+            <div class="input-block-title" style="color:#1a7a4a;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              REALISASI
+            </div>
+            <div class="input-sub-row">
+              <span class="input-sub-label">New (Miliar Rp)</span>
+              <div class="rp-input-wrap">
+                <span class="rp-prefix">M</span>
+                <input type="number" class="rp-input" id="inp-${div}-real_new" value="${vals.real_new}" min="0" oninput="updateInputTotal('${div}')">
+              </div>
+            </div>
+            <div class="input-sub-row">
+              <span class="input-sub-label">Renewal (Miliar Rp)</span>
+              <div class="rp-input-wrap">
+                <span class="rp-prefix">M</span>
+                <input type="number" class="rp-input" id="inp-${div}-real_ren" value="${vals.real_ren}" min="0" oninput="updateInputTotal('${div}')">
+              </div>
+            </div>
+            <div class="input-total-row">
+              <span class="itl">Total Realisasi</span>
+              <span class="itv" id="itot-${div}-real">${fmt(realTot)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+          <label>Penjelasan Deviasi Forecast (Opsional)</label>
+          <textarea class="form-input" id="inp-${div}-fc_deviation_explanation" placeholder="Jelaskan jika ada deviasi dari forecast..." rows="3">${vals.fc_deviation_explanation}</textarea>
+        </div>
+
+        <div class="save-div-btn">
+          <button class="btn btn-primary btn-sm" onclick="saveJasindoDiv('${div}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Simpan ${DIV_LABELS[div]} — ${MONTHS[selectedM]}
+          </button>
+        </div>
+      </div>`;
+    container.appendChild(sec);
+  });
+}
+
+function toggleSection(div){
+  const body = document.getElementById('body-'+div);
+  const chev = document.getElementById('chev-'+div);
+  if (!body || !chev) return;
+  const open = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', open);
+  chev.classList.toggle('open', !open);
+}
+
+function adminSelectMonth(div, monthIdx){
+  adminDivMonths[div] = monthIdx;
+  // Update pills
+  const pills = document.querySelectorAll(`#imp-${div} .imp`);
+  pills.forEach((p,i)=>p.classList.toggle('active',i===monthIdx));
+  // Load values for new month
+  const data = loadJasindoData();
+  const rec = data[div][monthIdx];
+  const vals = {rkap_new:rec.rkap_new||0,rkap_ren:rec.rkap_ren||0,fc_new:rec.fc_new||0,fc_ren:rec.fc_ren||0,real_new:rec.real_new||0,real_ren:rec.real_ren||0};
+  ['rkap_new','rkap_ren','fc_new','fc_ren','real_new','real_ren'].forEach(k=>{
+    const el = document.getElementById(`inp-${div}-${k}`);
+    if(el) el.value = vals[k];
+  });
+  updateInputTotal(div);
+  // Update save button label
+  const saveBtn = document.querySelector(`#body-${div} .save-div-btn button`);
+  if(saveBtn) saveBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan ${DIV_LABELS[div]} — ${MONTHS[monthIdx]}`;
+}
+
+function updateInputTotal(div){
+  const g = k => parseFloat(document.getElementById(`inp-${div}-${k}`)?.value)||0;
+  const rkapTot = (g('rkap_new')+g('rkap_ren'))*1e6;
+  const fcTot   = (g('fc_new')+g('fc_ren'))*1e6;
+  const realTot = (g('real_new')+g('real_ren'))*1e6;
+  const e = id => document.getElementById(id);
+  if(e(`itot-${div}-rkap`)) e(`itot-${div}-rkap`).textContent = fmt(rkapTot);
+  if(e(`itot-${div}-fc`))   e(`itot-${div}-fc`).textContent   = fmt(fcTot);
+  if(e(`itot-${div}-real`)) e(`itot-${div}-real`).textContent = fmt(realTot);
+}
+
+function saveJasindoDiv(div){
+  const m = adminDivMonths[div] ?? new Date().getMonth();
+  const g = k => parseFloat(document.getElementById(`inp-${div}-${k}`)?.value)||0;
+  const t = k => document.getElementById(`inp-${div}-${k}`)?.value||'';
+  const data = loadJasindoData();
+  data[div][m] = {
+    rkap_new:g('rkap_new'), rkap_ren:g('rkap_ren'),
+    fc_new:g('fc_new'),     fc_ren:g('fc_ren'),
+    real_new:g('real_new'), real_ren:g('real_ren'),
+    fc_deviation_explanation: t('fc_deviation_explanation'),
+  };
+  saveJasindoData(data);
+  showToast(`✅ Data ${DIV_LABELS[div]} — ${MONTHS[m]} berhasil disimpan!`);
+  // Refresh status pill
+  const pill = document.querySelector(`#sec-${div} .ds-pill`);
+  if(pill){ pill.textContent='Ada Data'; pill.classList.remove('empty'); pill.classList.add('ok'); }
+}
+
+/* ─── ADMIN: JAMKRINDO INPUT ─── */
+function addJamkrindoEntry(){
+  const bulan    = document.getElementById('jk-input-bulan').value;
+  const account  = document.getElementById('jk-input-account').value.trim();
+  const ro       = document.getElementById('jk-input-ro').value;
+  const lob      = document.getElementById('jk-input-lob').value;
+  const premi    = parseFloat(document.getElementById('jk-input-premi').value)||0;
+  const tglRaw   = document.getElementById('jk-input-tanggal').value;
+
+  if(!bulan||!account||!ro||!lob||premi<=0||!tglRaw){
+    showToast('⚠️ Lengkapi semua field sebelum menyimpan.','error'); return;
+  }
+  const d = new Date(tglRaw);
+  const konfirmasi = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+
+  const entries = loadJamkrindoData();
+  entries.push({id:Date.now(), bulan, account, ro, premi, lob, konfirmasi});
+  saveJamkrindoData(entries);
+  showToast('✅ Entri referral berhasil ditambahkan!');
+
+  // Reset form
+  ['jk-input-bulan','jk-input-account','jk-input-ro','jk-input-lob','jk-input-premi','jk-input-tanggal']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  renderJKAdminList();
+}
+
+function deleteJKEntry(id){
+  if(!confirm('Hapus entri ini?')) return;
+  const entries = loadJamkrindoData().filter(e=>e.id!==id);
+  saveJamkrindoData(entries);
+  showToast('🗑️ Entri dihapus.','error');
+  renderJKAdminList();
+}
+
+function renderJKAdminList(){
+  const entries = loadJamkrindoData();
+  document.getElementById('jk-entry-count').textContent = entries.length;
+  const list = document.getElementById('jk-entries-list');
+  if(!list) return;
+  if(entries.length===0){
+    list.innerHTML='<div style="color:var(--text-light);font-size:13px;text-align:center;padding:20px;">Belum ada entri.</div>';
+    return;
+  }
+  list.innerHTML = entries.map((e,i)=>`
+    <div class="entry-item">
+      <div class="ei-no">${i+1}</div>
+      <div class="ei-info">
+        <div class="ei-account">${e.account}</div>
+        <div class="ei-meta">${e.bulan} · ${e.ro} · <span class="lob-badge ${lobClass[e.lob]||''}">${e.lob}</span> · ${e.konfirmasi}</div>
+      </div>
+      <div class="ei-premi">${fmt(e.premi)}</div>
+      <button class="ei-del" onclick="deleteJKEntry(${e.id})" title="Hapus">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
+    </div>`).join('');
+}
+
+/* ─────────────────────────────────────────────
+   INITIALIZATION
+───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', ()=>{
+  setDate('today-date');
+  initSplash();
+  document.getElementById('adminModal').addEventListener('click',function(e){ if(e.target===this) closeAdminModal(); });
+});
+</script>
+</body>
+</html>
